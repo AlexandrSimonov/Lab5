@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Cabin>
+@{
+    ViewData["Title"] = "Cabin";
+}
+
+<script type="text/javascript">
+    var cabins = [];
+
+    var Cabin = {
+        delete: function (id) {
+            var formData = new FormData();
+            formData.append("Id", id);
+            fetch("Cabin/Delete",
+                {
+                    method: 'POST',
+                    body: formData
+                }).then(function () {
+                    location.reload();
+                });
+
+        },
+        edit: function (id) {
+            var element = cabins.find(function (item) {
+                return item.Id == id;
+            });
+
+            console.log(element);
+        }
+    };
+
+</script>
+
+@foreach (var cabin in Model)
+{
+    <script>
+        cabins.push({
+            Id: @cabin.Id,
+            Number: @cabin.Number,
+            CountBeds: @cabin.CountBeds,
+            Location: '@cabin.Location'
+        })
+    </script>
+}
+
+<h2>Cabin</h2>
+
+<table class="table table-striped">
+    <thead table-stripe>
+        <tr>
+            <td>#</td>
+            <td>Count beds</td>
+            <td>Number</td>
+            <td>Location</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cabin in Model)
+        {
+            <tr>
+                <td>@cabin.Id</td>
+                <td>@cabin.CountBeds</td>
+                <td>@cabin.Number</td>
+                <td>@cabin.Location</td>
+                <td><button type="button" class="btn btn-warning" onclick="Cabin.edit(@cabin.Id)">Edit</button></td>
+                <td><button type="button" class="btn btn-danger" onclick="Cabin.delete(@cabin.Id)">Delete</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<form class="form-horizontal" action="~/Cabin/Upsert" method="post">
+    <input type="text" name="Id" hidden="" Value="0">
+    <div class="form-group">
+        <label class="control-label" for="countBedsInput">Cound beds</label>
+        <div class="controls">
+            <input type="text" class="form-control" id="countBedsInput" placeholder="Count beds" name="CountBeds">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="numberInput">Number</label>
+        <div class="controls">
+            <input type="text" class="form-control" id="numberInput" placeholder="Number" name="Number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="locationInput">Location</label>
+        <div class="controls">
+            <input type="text" class="form-control" id="locationInput" placeholder="Location" name="Location">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="controls">
+            <button type="submit" class="btn">Save</button>
+        </div>
+    </div>
+</form>
+
+
